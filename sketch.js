@@ -1,3 +1,29 @@
+let snow = [];
+let gravity;
+
+function setup(){
+  createCanvas(windowWidth, windowHeight);
+  gravity = createVector(0,0.03);
+
+  noLoop();
+}
+
+function draw(){
+  background(0); 
+  for(let i = 0; i < 50; ++i){
+     snow.push(new Snowflake());  
+  }
+  
+
+  for(flake of snow){
+    //flake.applyForce(gravity);
+    //flake.update()
+    flake.render();
+  }
+}
+
+
+/*
 function tree(a, brightness, len){
   push();
     colorMode(HSB);
@@ -48,3 +74,4 @@ function draw() {
   let a = random(255);
   tree(a, 50, 100);  
 }
+*/
