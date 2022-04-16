@@ -1,3 +1,5 @@
+let snow = [];
+
 function tree(a, brightness, len){
   push();
     colorMode(HSB);
@@ -18,7 +20,11 @@ function tree(a, brightness, len){
 }
 
 function randomizeBGcolor(){
-  bgColor = color(random(170,255),random(170,255),random(170,255));
+  //let bgColor = color(random(160,255),random(160,255),random(160,255));
+  h = random([0,15, 165,180,195, 210,225, 345]);
+  s = random(30,43);
+  b = random(75,85);
+  bgColor = color('hsb('+h+', '+s+'%, '+b+'%)');
   background(bgColor);
 }
 
@@ -35,13 +41,23 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
   
-  //noLoop();
+  noLoop();
 }
 
 function draw() {
   randomizeBGcolor();
+
+  //background(0);
+  for(let i = 0; i < 100; ++i){
+     snow.push(new Snowflake());  
+  }
+  
+  for(flake of snow){
+    flake.render();
+  }
   
   positionEllipse();
+
 
   translate(windowWidth/2, windowHeight);
   //green,blue, yellow, orange, teal
