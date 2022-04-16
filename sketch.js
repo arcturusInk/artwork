@@ -1,9 +1,9 @@
 let snow = [];
-let gravity;
+//let gravity;
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
-  gravity = createVector(0,0.03);
+  //gravity = createVector(0,0.03);
 
   noLoop();
 }

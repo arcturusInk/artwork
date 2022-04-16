@@ -1,6 +1,14 @@
 function getRandomSize(){
-	let r = pow(random(0, 1),5);
-	return constrain(r * 20 , 2, 36);
+	// let r = pow(random(0, 1),5);
+	// return constrain(r * 20 , 2, 36);
+
+	while (true){
+		let r1 = random(1);
+		let r2 = random(1);
+		if(r2 > r1){
+			return r1 * 20;
+		}
+	}
 }
 
 class Snowflake{
@@ -13,10 +21,11 @@ class Snowflake{
 		this.pos = createVector(x,y);
 		this.r = getRandomSize();
 		//not needed, movement for my needs
-		this.vel = createVector();
-		this.acc = createVector();
+		// this.vel = createVector();
+		// this.acc = createVector();
 	}
 
+/*
 	applyForce(force){
 		//takes a force, then applies to the object acc
 		this.acc.add(force);
@@ -30,10 +39,11 @@ class Snowflake{
 		//clear out the acc in every frame. force accumulation
 		this.acc.mult(0);
 	}
-
+*/
 	render(){
 		//determines color: white
-		stroke(255); 
+		//stroke(255); 
+		stroke( 255,255,255, random(191,255));
 		//how big the snow flakes should be
 		strokeWeight(this.r);
 		point(this.pos.x, this.pos.y);
