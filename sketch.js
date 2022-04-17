@@ -1,8 +1,8 @@
-let snow = [];
+let cluster = [];
 
 function tree(a, brightness, len){
   push();
-    colorMode(HSB);
+  colorMode(HSB);
   if (len > 7){
     //strokeWeight: how heavy the line marks should be
     strokeWeight(len/20);
@@ -21,9 +21,10 @@ function tree(a, brightness, len){
 
 function randomizeBGcolor(){
   //let bgColor = color(random(160,255),random(160,255),random(160,255));
-  h = random([0,15, 165,180,195, 210,225, 345]);
+  h = random([0, 15, 180, 195, 210, 225, 240, 300, 345]);//random([0,15, 180,195, 210,225, 345]);//165
+  console.log(h);
   s = random(30,43);
-  b = random(75,85);
+  b = random(0,25)//random(75,85);
   bgColor = color('hsb('+h+', '+s+'%, '+b+'%)');
   background(bgColor);
 }
@@ -40,20 +41,24 @@ function positionEllipse() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
-  
+
   noLoop();
+
+    for(let i = 0; i < 200; ++i){
+     cluster.push(new Star());  
+  }
+  
+
 }
 
 function draw() {
   randomizeBGcolor();
 
   //background(0);
-  for(let i = 0; i < 100; ++i){
-     snow.push(new Snowflake());  
-  }
-  
-  for(flake of snow){
-    flake.render();
+
+
+  for(star of cluster){
+    star.render();
   }
   
   positionEllipse();
@@ -63,4 +68,5 @@ function draw() {
   //green,blue, yellow, orange, teal
   let a = random(255);
   tree(a, 50, 100);  
+
 }
