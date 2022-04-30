@@ -7,7 +7,7 @@ function tree(a, brightness, len){
     //strokeWeight: how heavy the line marks should be
     strokeWeight(len/20);
     //determines the color
-    stroke(a ,90,brightness, len/30);
+    stroke((a-random(30)),90,brightness, len/30);
     //determines the location of the lines
     line(0, 0, 0, -len);
     translate(0, -len);  
@@ -38,6 +38,19 @@ function positionEllipse() {
 
 }
 
+function starRender(){
+  for(star of cluster){
+    star.render();
+  }
+}
+
+function createTree(){
+  translate(windowWidth/2, windowHeight);
+  //green,blue, yellow, orange, teal
+  let a = random(256);
+  tree(a, 50, 100);  
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(DEGREES);
@@ -56,17 +69,11 @@ function draw() {
 
   //background(0);
 
-
-  for(star of cluster){
-    star.render();
-  }
+  starRender();
+    
   
   positionEllipse();
 
-
-  translate(windowWidth/2, windowHeight);
-  //green,blue, yellow, orange, teal
-  let a = random(255);
-  tree(a, 50, 100);  
+  createTree();
 
 }
