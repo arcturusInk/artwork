@@ -1,6 +1,49 @@
 let cluster = [];
 
+let iteration = 700, r = 125;
+let cX = [], cY = [];
+let step, moonColor;
+
+function randomizeBGcolor(){
+  //let bgColor = color(random(160,255),random(160,255),random(160,255));
+  h = random([0, 15, 180, 195, 210, 225, 240, 300, 345]);//random([0,15, 180,195, 210,225, 345]);//165
+  console.log(h);
+  s = random(30,43);
+  b = random(0,25)//random(75,85);
+  bgColor = color('hsb('+h+', '+s+'%, '+b+'%)');
+  background(bgColor);
+}
+
+function moon() {
+//translate(width/7, height/4);
+//translate(width/2, height/4);
+//translate(width/1.2, height/4);
+  translate(width/random(2,7), height/4);
+
+  beginShape();
+  for (let i = 0; i < iteration; ++i) {
+    //style for rendering line endings
+    strokeCap(ROUND);
+    //style of the joints which connect line segments
+    strokeJoin(ROUND);
+    console.log("strokeWeightVal:" + strokeWeightVal);
+    strokeWeight(strokeWeightVal);
+    //pale color
+    stroke(moonColor);
+    noFill();
+    
+    let rad = round(randomGaussian(10, iteration));
+    vertex(cX[rad], cY[rad]);
+    
+    push();
+    pop();
+  }
+  endShape();
+}
+
 function tree(a, brightness, len){
+  angleMode(DEGREES);
+
   push();
   colorMode(HSB);
   if (len > 7){
@@ -19,23 +62,13 @@ function tree(a, brightness, len){
   pop();  
 }
 
-function randomizeBGcolor(){
-  //let bgColor = color(random(160,255),random(160,255),random(160,255));
-  h = random([0, 15, 180, 195, 210, 225, 240, 300, 345]);//random([0,15, 180,195, 210,225, 345]);//165
-  console.log(h);
-  s = random(30,43);
-  b = random(0,25)//random(75,85);
-  bgColor = color('hsb('+h+', '+s+'%, '+b+'%)');
-  background(bgColor);
-}
-
-function positionEllipse() {
-  //randomize circle color
-  circleColor = color(random(200,255),random(200,255),random(200,255));
-  fill(circleColor);
-  noStroke();
-  ellipse(windowWidth/2,windowHeight/2,400,400);
-
+function createTree(){
+  let test = windowWidth/6;
+  console.log("test: " + test);
+  translate(windowWidth/4, windowHeight/1.3);
+  //green,blue, yellow, orange, teal
+  let a = random(256);
+  tree(a, 50, 110);  
 }
 
 function starRender(){
@@ -44,36 +77,54 @@ function starRender(){
   }
 }
 
-function createTree(){
-  translate(windowWidth/2, windowHeight);
-  //green,blue, yellow, orange, teal
-  let a = random(256);
-  tree(a, 50, 100);  
-}
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
 
-  noLoop();
+  moonColor = color(random(200,255),random(200,255),random(200,255));
+  strokeWeightVal=random(0.1,0.51);
+  //so it glows... like the moon
+  pixelDensity()*2;
+  console.log("pixelDensity: " + pixelDensity()*2);
 
-    for(let i = 0; i < 200; ++i){
+  step = TAU / iteration;
+
+  for (let i = 0; i < iteration; i++) {
+    //console.log("cos: " + cos(step * i) * r)
+    //console.log("sin: " + sin(step * i) * r)
+    cX.push(cos(step * i) * r)
+    cY.push(sin(step * i) * r)
+  }
+
+  for(let i = 0; i < 200; ++i){
      cluster.push(new Star());  
   }
-  
 
+  noLoop();
 }
 
 function draw() {
   randomizeBGcolor();
 
-  //background(0);
-
   starRender();
-    
-  
-  positionEllipse();
+
+  moon();
 
   createTree();
+  // translate(windowWidth/2, windowHeight);
+  // //green,blue, yellow, orange, teal
+  // let a = random(256);
+  // tree(a, 50, 100);  
+
+}
+
+
+//positioning the 'moon'
+//function no longer being used
+function positionEllipse() {
+  //randomize circle color
+  circleColor = color(random(200,255),random(200,255),random(200,255));
+  fill(random(200,255),random(200,255),random(200,255));
+  noStroke();
+  ellipse(windowWidth/2,windowHeight/2,400,400);
 
 }
