@@ -1,8 +1,9 @@
 let cluster = [];
 
-let iteration = 700, r = 125;
+let iteration, r = 125;
 let cX = [], cY = [];
 let step, moonColor;
+let r1,  r2;
 
 function randomizeBGcolor(){
   //let bgColor = color(random(160,255),random(160,255),random(160,255));
@@ -22,6 +23,10 @@ function moon() {
 
   beginShape();
   for (let i = 0; i < iteration; ++i) {
+
+    let rad = round(randomGaussian(10, iteration));
+    vertex(cX[rad], cY[rad]);
+
     //style for rendering line endings
     strokeCap(ROUND);
     //style of the joints which connect line segments
@@ -29,11 +34,12 @@ function moon() {
     console.log("strokeWeightVal:" + strokeWeightVal);
     strokeWeight(strokeWeightVal);
     //pale color
-    stroke(moonColor);
+    let rc = map(cX[rad], 0, width, r1, r2);
+    let gc = map(cY[rad], 0, height, g1, g1);
+    let bc = map(cX[rad], 0, width, b1, b1);
+    stroke(rc,gc,bc);
     noFill();
     
-    let rad = round(randomGaussian(10, iteration));
-    vertex(cX[rad], cY[rad]);
     
     push();
     pop();
@@ -50,7 +56,8 @@ function tree(a, brightness, len){
     //strokeWeight: how heavy the line marks should be
     strokeWeight(len/20);
     //determines the color
-    stroke((a-random(30)),90,brightness, len/30);
+    //console.log("map: " + map(len, 0, width, r1, r2)); 
+    stroke(a+map(len, 0, width, r1, r2),90,brightness, len/30);
     //determines the location of the lines
     line(0, 0, 0, -len);
     translate(0, -len);  
@@ -80,8 +87,12 @@ function starRender(){
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+
+  iteration = random(700, 2000);
+  console.log("iteration: " + iteration);
   moonColor = color(random(200,255),random(200,255),random(200,255));
-  strokeWeightVal=random(0.1,0.51);
+  strokeWeightVal=random(0.19,0.51);
+  console.log("strokeWeightVal: " + strokeWeightVal)
   //so it glows... like the moon
   pixelDensity()*2;
   console.log("pixelDensity: " + pixelDensity()*2);
@@ -100,6 +111,13 @@ function setup() {
   }
 
   noLoop();
+
+  r1 = random(255);
+  r2 = random(255);
+  g1 = random(255);
+  g2 = random(255);
+  b1 = random(255);
+  b2 = random(255);
 }
 
 function draw() {
