@@ -1,1 +1,1 @@
-et, al.
+A Creative Coding/generative art project
