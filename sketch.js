@@ -1,4 +1,49 @@
-let r1,  r2;
+
+
+let sketch = function (p) {
+  p.particles = [];
+  p.num = 1000;
+  p.noiseScale = 0.01/2;
+  
+
+  p.setup = function() {
+    p.createCanvas(400, 400);
+    for(let i = 0; i < p.num; i ++) {
+      p.v1 = p.createVector(p.random(p.width), p.random(p.height));
+      p.particles.push(p.v1)
+    }
+    p.stroke('yellow');
+  }
+
+  p.draw = function() {
+    p.background(0,10);
+    for(p.i = 0; p.i < p.num; p.i++) {
+      p.pt = p.particles[p.i];
+      p.point(p.pt.x, p.pt.y);
+      p.n = p.noise(p.pt.x * p.noiseScale, p.pt.y * p.noiseScale);
+      p.a = p.TAU * p.n;
+      p.x += p.cos(p.a);
+      p.y += p.sin(p.a);
+      /*
+      if(!p.onScreen(p.pt)) {
+        p.pt.x = p.random(p.width);
+        p.pt.y = p.random(p.height);
+      }
+      */
+    }
+  }
+
+  p.onScreen = function(v){
+    return v.x >= 0 && v.x <= p.width && v.y >= 0 && v.y <= p.height;
+  }
+
+}
+
+let background = new p5(sketch);
+
+
+
+/*let r1,  r2;
 
 function tree(a, brightness, len){
   angleMode(DEGREES);
@@ -42,3 +87,4 @@ function draw() {
 
   createTree();
 }
+*/
