@@ -1,148 +1,111 @@
-let cluster = [];
+let pg;
+let hue, brightness = 50;
 
-let iteration, r = 125;
-let cX = [], cY = [];
-let step, moonColor;
-let r1,  r2;
+let iteration, step, r = 90;
+let x = [], y = [];
 
-function randomizeBGcolor(){
-  //let bgColor = color(random(160,255),random(160,255),random(160,255));
-  h = random([0, 15, 180, 195, 210, 225, 240, 300, 345]);//random([0,15, 180,195, 210,225, 345]);//165
-  console.log(h);
-  s = random(30,43);
-  b = random(0,25)//random(75,85);
-  bgColor = color('hsb('+h+', '+s+'%, '+b+'%)');
-  background(bgColor);
-}
+let dotsArray = [];
+let totalDots = 1000;
+let r1, r2, b1, b2, g1, g2, strokeW, noiseMultiplier, direction, al;
 
 function moon() {
-//translate(width/7, height/4);
-//translate(width/2, height/4);
-//translate(width/1.2, height/4);
-  translate(width/random(2,7), height/4);
-
-  beginShape();
-  for (let i = 0; i < iteration; ++i) {
-
-    let rad = round(randomGaussian(10, iteration));
-    vertex(cX[rad], cY[rad]);
-
-    //style for rendering line endings
-    strokeCap(ROUND);
-    //style of the joints which connect line segments
-    strokeJoin(ROUND);
-    console.log("strokeWeightVal:" + strokeWeightVal);
-    strokeWeight(strokeWeightVal);
-    //pale color
-    let rc = map(cX[rad], 0, width, r1, r2);
-    let gc = map(cY[rad], 0, height, g1, g1);
-    let bc = map(cX[rad], 0, width, b1, b1);
-    stroke(rc,gc,bc);
-    noFill();
-    
-    
-    push();
-    pop();
-  }
-  endShape();
+  pg.translate(windowWidth/pg.random(1.3, 2), windowHeight/4);
+  //pg.translate(windowWidth/1.3, windowHeight/4);
+  pg.beginShape();
+    for (let i = 0; i < iteration; ++i) {
+      let rad = pg.round(pg.randomGaussian(10, iteration));
+      pg.vertex(x[rad], y[rad]);
+      pg.strokeCap(ROUND);
+      pg.strokeJoin(ROUND);
+      pg.strokeWeight(strokeWeightVal);
+      pg.stroke(b2,r1,g2);
+      pg.noFill();
+      pg.push();
+      pg.pop();
+    }
+  pg.endShape();
 }
 
-function tree(a, brightness, len){
-  angleMode(DEGREES);
+function tree(hue, brightness, len) {
+  pg.angleMode(DEGREES);
 
-  push();
-  colorMode(HSB);
+  pg.push();
+  pg.colorMode(HSB);
   if (len > 7){
-    //strokeWeight: how heavy the line marks should be
-    strokeWeight(len/20);
-    //determines the color
-    //console.log("map: " + map(len, 0, width, r1, r2)); 
-    stroke(a+map(len, 0, width, r1, r2),90,brightness, len/30);
-    //determines the location of the lines
-    line(0, 0, 0, -len);
-    translate(0, -len);  
-    rotate(random(20, 30));
-    tree(a, brightness + random(-10, 10),len * random(0.7, 0.9));
-    rotate(random(-50,-60));
-    tree(a, brightness + random(-10, 10),len * random(0.7, 0.9));
+    pg.strokeWeight(len/20);
+    pg.stroke(hue+pg.map(len, 0, width, r1, r2),90,brightness, len/30);
+    pg.line(0, 0, 0, -len);
+    pg.translate(0, -len);  
+    pg.rotate(pg.random(20, 30));
+    tree(hue, brightness + pg.random(-10, 10),len * pg.random(0.7, 0.9));
+    pg.rotate(pg.random(-50,-60));
+    tree(hue, brightness + pg.random(-10, 10),len * pg.random(0.7, 0.9));
   }
-  pop();  
+  pg.pop();    
 }
 
-function createTree(){
-  let test = windowWidth/6;
-  console.log("test: " + test);
-  translate(windowWidth/4, windowHeight/1.3);
-  //green,blue, yellow, orange, teal
-  let a = random(256);
-  tree(a, 50, 110);  
-}
-
-function starRender(){
-  for(star of cluster){
-    star.render();
+function turbulence(){
+  for(speck of dotsArray) {
+    strokeWeight(strokeW);
+    let rc = map(speck.x, 0, width, r1, r2);
+    let gc = map(speck.y, 0, height, g1, g2);
+    let bc = map(speck.x, 0, width, b1, b2); 
+    stroke(rc, gc, bc);
+    point(speck.x, speck.y);
+    let n = noise(speck.x * noiseMultiplier, speck.y * noiseMultiplier);
+    let angle = TAU * n;
+    speck.x += cos(angle) * direction;
+    speck.y += sin(angle) ;
+    if(!seenOnCanvas(speck)){
+      speck.x = random(width);
+      speck.y = random(height);
+    }
   }
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  pg = createGraphics(windowWidth, windowHeight);
 
+  hue = random(256);
+  len = windowHeight/6.8;
 
-  iteration = random(700, 2000);
-  console.log("iteration: " + iteration);
-  moonColor = color(random(200,255),random(200,255),random(200,255));
+  iteration = 500;
   strokeWeightVal=random(0.19,0.51);
-  console.log("strokeWeightVal: " + strokeWeightVal)
-  //so it glows... like the moon
-  pixelDensity()*2;
-  console.log("pixelDensity: " + pixelDensity()*2);
-
+  pg.pixelDensity()*2;
   step = TAU / iteration;
-
   for (let i = 0; i < iteration; i++) {
-    //console.log("cos: " + cos(step * i) * r)
-    //console.log("sin: " + sin(step * i) * r)
-    cX.push(cos(step * i) * r)
-    cY.push(sin(step * i) * r)
+    x.push(pg.cos(step * i) * r);
+    y.push(pg.sin(step * i) * r);
   }
+  pg.noLoop();
 
-  for(let i = 0; i < 200; ++i){
-     cluster.push(new Star());  
+  
+  r1 = random(256); r2 = random(256);
+  g1 = random(256); g2 = random(256);
+  b1 = random(256); b2 = random(256);
+  strokeW = random(.5,2);
+  noiseMultiplier = random([0.0009,0.003,0.004,0.005,0.008,0.009, 0.011]);
+  direction = random([1, 2, -1, -2]);
+  al = random(5,10); 
+  for(let i = 0; i < totalDots; i ++) {
+    dotsArray.push(createVector(random(width), random(height)));
   }
-
-  noLoop();
-
-  r1 = random(255);
-  r2 = random(255);
-  g1 = random(255);
-  g2 = random(255);
-  b1 = random(255);
-  b2 = random(255);
 }
 
 function draw() {
-  randomizeBGcolor();
-
-  starRender();
-
   moon();
 
-  createTree();
-  // translate(windowWidth/2, windowHeight);
-  // //green,blue, yellow, orange, teal
-  // let a = random(256);
-  // tree(a, 50, 100);  
+  pg.translate(windowWidth/-4, windowHeight/1.3);
+  tree(hue, brightness, len); 
 
+  //Draw the offscreen buffer to the screen with image()
+  image(pg, 0, 0);
+
+  background(0, al);
+  turbulence();
 }
 
-
-//positioning the 'moon'
-//function no longer being used
-function positionEllipse() {
-  //randomize circle color
-  circleColor = color(random(200,255),random(200,255),random(200,255));
-  fill(random(200,255),random(200,255),random(200,255));
-  noStroke();
-  ellipse(windowWidth/2,windowHeight/2,400,400);
-
+function seenOnCanvas(speck) {
+  return speck.x >= 0 && speck.x <= width && speck.y >= 0 && speck.y <= height;
 }
